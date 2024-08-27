@@ -81,7 +81,6 @@ export default function CartoonGirlModel({
 
   const camera = useThree((state) => state.camera);
   const clock = useThree((state) => state.clock);
-  const invalidate = useThree(state=>state.invalidate)
 
   materials.Girl.roughness = 0.4;
   materials.gem.emissiveIntensity = 1.35;
@@ -91,10 +90,8 @@ export default function CartoonGirlModel({
       camPosRef.current.add(camera);
       camera.position.set(0, 0, 0);
       camera.rotation.set(-Math.PI / 2, 0, 0);
-
-      invalidate();
     }
-  }, [camera, invalidate]);
+  }, [camera]);
 
   useEffect(() => {
     if (
@@ -109,7 +106,7 @@ export default function CartoonGirlModel({
 
     let timerID: number | null = null;
 
-    function onPullInFinished(
+    function onFinished(
       e: THREE.Event<"finished", THREE.AnimationMixer> &
         THREE.AnimationMixerEventMap["finished"],
     ) {
@@ -132,7 +129,7 @@ export default function CartoonGirlModel({
       }
     }
 
-    mixer.addEventListener("finished", onPullInFinished);
+    mixer.addEventListener("finished", onFinished);
 
     switch (action) {
       case "init":
@@ -189,7 +186,7 @@ export default function CartoonGirlModel({
     }
 
     return () => {
-      mixer.removeEventListener("finished", onPullInFinished);
+      mixer.removeEventListener("finished", onFinished);
       if (timerID) clearTimeout(timerID);
     };
   }, [actions, action, mixer, clock, setIsFinishedOpen]);
