@@ -119,23 +119,30 @@ function App() {
             <Scene
               action={action}
               setIsFinishedOpen={() => setIsFinishedOpen(true)}
-              setIsSceneMounted={setIsSceneMounted}
+              sync={() => setIsSceneMounted(true)}
             />
           </Suspense>
         </Canvas>
       )}
-      {
-        <div className={`icon-container${showPinchOut ? "" : " hidden"}`}>
-          <PinchOutIcon />
-          /
-          <MouseScrollUpIcon />
+
+      {!isSceneMounted && (
+        <div className="ui-container text-container">
+          <p>
+            <i>加载中...</i>
+          </p>
         </div>
-      }
-      {
-        <div className={`icon-container${showSwipeRight ? "" : " hidden"}`}>
-          <SwipeRightIcon />
-        </div>
-      }
+      )}
+
+      <div className={`icon-container${showPinchOut ? "" : " hidden"}`}>
+        <PinchOutIcon />
+        /
+        <MouseScrollUpIcon />
+      </div>
+
+      <div className={`icon-container${showSwipeRight ? "" : " hidden"}`}>
+        <SwipeRightIcon />
+      </div>
+
       {/* <div className="ui-container"> */}
       {/*   <button onClick={() => setAction("init")}>init</button> */}
       {/*   <button onClick={pullIn}>pull in</button> */}

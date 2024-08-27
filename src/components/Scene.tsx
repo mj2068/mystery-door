@@ -1,8 +1,6 @@
 import {
-  Dispatch,
   Fragment,
   PropsWithoutRef,
-  SetStateAction,
   useEffect,
   useRef,
   useState,
@@ -14,13 +12,12 @@ import CartoonGirlModel from "/src/components/CartoonGirlModel";
 import { ActionState } from "/src/types";
 import { ConfettiModel } from "./ConfettiModel";
 import RectParticleEmitter from "./RectParticleEmitter";
-import { useFrame } from "@react-three/fiber";
 
 export default function Scene(
   props: PropsWithoutRef<{
     action: ActionState;
     setIsFinishedOpen: () => void;
-    setIsSceneMounted: Dispatch<SetStateAction<boolean>>;
+    sync?: () => void;
   }>,
 ) {
   // console.log("scene render");
@@ -33,15 +30,12 @@ export default function Scene(
     // console.log("scene effect");
 
     setIsMounted(true);
-    props.setIsSceneMounted(true);
+    props.sync && props.sync();
 
     return () => {
       setIsMounted(false);
-      props.setIsSceneMounted(false);
     };
   }, [props]);
-
-  useFrame(() => {});
 
   return (
     <Fragment>

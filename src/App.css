@@ -4,7 +4,7 @@
   height: 100vh;
   /* min-height: 480px; */
   max-width: 62.5vh;
-  
+
   position: relative;
 
   background-color: #222;
@@ -17,8 +17,8 @@
 
 .ui-container {
   position: absolute;
-  left: 0;
-  top: 0;
+  left: 12px;
+  top: 12px;
   display: flex;
   flex-direction: column;
 }
@@ -73,6 +73,10 @@ img.invert {
   & img {
     width: 100%;
   }
+}
+
+.text-container {
+  color: white;
 }
 
 .debug {
