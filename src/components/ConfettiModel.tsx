@@ -38,7 +38,7 @@ export function ConfettiModel({
 }) {
   const group = React.useRef<THREE.Group>(null);
   const { nodes, materials, animations } = useGLTF(
-    "/confetti.glb",
+    "confetti.glb",
   ) as GLTFResult;
   // console.log("confetti render");
   // console.log(animations);
@@ -135,4 +135,4 @@ export function ConfettiModel({
   );
 }
 
-useGLTF.preload("/confetti.glb");
+useGLTF.preload("confetti.glb");

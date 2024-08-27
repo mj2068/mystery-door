@@ -1,5 +1,6 @@
-import { PlaneGeometry, WireframeGeometry } from "three";
+import { PlaneGeometry } from "three";
 import { ConfettiModel } from "./ConfettiModel";
+import { useState } from "react";
 
 export default function RectParticleEmitter({
   amount,
@@ -13,30 +14,38 @@ export default function RectParticleEmitter({
 }) {
   const plane = new PlaneGeometry(width, height);
 
-  const particles = Array.from({ length: amount }).map((_, i) => {
-    const x = width / 2 - Math.random() * width;
-    const y = height / 2 - Math.random() * height;
-    const [P, rnd] = [Math.PI, Math.random];
+  const [particlesData] = useState(
+    Array.from({ length: amount }).map(() => {
+      const [P, rnd] = [Math.PI, Math.random];
 
-    const angleRange = P / 8;
-    const delta = rnd() * angleRange - angleRange / 2;
-    const angleRange2 = P / 2;
-    const delta2 = rnd() * angleRange2 - angleRange2 / 2;
+      const x = width / 2 - rnd() * width;
+      const y = height / 2 - rnd() * height;
+      const angleYRange = P / 8;
+      const angleY = -P / 2 + (rnd() * angleYRange - angleYRange / 2);
+      const angleZRange = P / 2;
+      const angleZ = rnd() * angleZRange - angleZRange / 2;
+      const scale = 0.06 + rnd() * 0.06;
 
-    return (
-      <group
-        key={i}
-        position={[x, y, 0]}
-        rotation={[0, -Math.PI / 2 + delta, delta2]}
-      >
-        <ConfettiModel
-          scale={0.05 + Math.random() * 0.05}
-          timeScale={0.5 + Math.random() * 1.5}
-          stripType={1 + Math.floor(Math.random() * 3)}
-        />
-      </group>
-    );
-  });
+      const timeScale = 0.5 + rnd() * 1.5;
+      const stripType = 1 + Math.floor(rnd() * 3);
+      return { x, y, angleY, angleZ, scale, timeScale, stripType };
+    }),
+  );
+
+  const particles = particlesData.map(
+    ({ x, y, angleY, angleZ, scale, timeScale, stripType }, i) => {
+      return (
+        <group
+          key={i}
+          position={[x, y, 0]}
+          rotation={[0, angleY, angleZ]}
+          scale={scale}
+        >
+          <ConfettiModel timeScale={timeScale} stripType={stripType} />
+        </group>
+      );
+    },
+  );
 
   return (
     <group {...props}>

@@ -1,16 +1,27 @@
-import { Fragment, PropsWithoutRef, useEffect, useRef, useState } from "react";
-import { OrbitControls } from "@react-three/drei";
+import {
+  Dispatch,
+  Fragment,
+  PropsWithoutRef,
+  SetStateAction,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+// import { OrbitControls } from "@react-three/drei";
 import { Bloom, EffectComposer, GodRays } from "@react-three/postprocessing";
 import { Mesh } from "three";
 import CartoonGirlModel from "/src/components/CartoonGirlModel";
 import { ActionState } from "/src/types";
-import { SpiralParticleModel } from "./SpiralParticleModel";
 import { ConfettiModel } from "./ConfettiModel";
-import { generateVibrantWarmBlueColor } from "/src/utils";
 import RectParticleEmitter from "./RectParticleEmitter";
+import { useFrame } from "@react-three/fiber";
 
 export default function Scene(
-  props: PropsWithoutRef<{ action: ActionState; setIsOpened: () => void }>,
+  props: PropsWithoutRef<{
+    action: ActionState;
+    setIsFinishedOpen: () => void;
+    setIsSceneMounted: Dispatch<SetStateAction<boolean>>;
+  }>,
 ) {
   // console.log("scene render");
 
@@ -19,19 +30,40 @@ export default function Scene(
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
+    // console.log("scene effect");
+
     setIsMounted(true);
-    return () => setIsMounted(false);
-  }, []);
+    props.setIsSceneMounted(true);
+
+    return () => {
+      setIsMounted(false);
+      props.setIsSceneMounted(false);
+    };
+  }, [props]);
+
+  useFrame(() => {});
 
   return (
     <Fragment>
       {/* <OrbitControls /> */}
-      <axesHelper args={[3]} />
+      {/* <axesHelper args={[3]} /> */}
 
-      <directionalLight intensity={2} position={[0, 10, 0]} castShadow />
-      {/* <directionalLight intensity={2} position={[-10, 20, -10]} castShadow/> */}
-      <directionalLight intensity={1} position={[0, 0, 10]} castShadow />
-      {/* <ambientLight /> */}
+      <directionalLight
+        intensity={2}
+        position={[-10, 10, 10]}
+        castShadow
+        shadow-intensity={0.3}
+        shadow-bias={-0.0001}
+        shadow-mapSize-width={1024}
+        shadow-mapSize-height={1024}
+      />
+      <directionalLight
+        intensity={2}
+        position={[-1, 2, -1]}
+        castShadow
+        shadow-intensity={0.3}
+      />
+      <ambientLight intensity={0.1} />
 
       {/* <mesh name="ground" rotation={[-Math.PI / 2, 0, 0]} receiveShadow> */}
       {/*   <circleGeometry args={[3, 128]} /> */}
@@ -59,8 +91,7 @@ export default function Scene(
             -Math.PI * Math.random(),
             0,
           ]}
-          timeScale={1}
-          // timeScale={0.5 + Math.random() * 0.5}
+          timeScale={0.5 + Math.random() * 1.5}
           stripType={1 + Math.floor(Math.random() * 3)}
         />
       ))}
@@ -68,8 +99,8 @@ export default function Scene(
       <CartoonGirlModel
         rotation={[0, Math.PI, 0]}
         action={props.action}
-        showGround={false}
-        setIsOpened={props.setIsOpened}
+        // showGround={false}
+        setIsFinishedOpen={props.setIsFinishedOpen}
       />
 
       <RectParticleEmitter
@@ -86,12 +117,12 @@ export default function Scene(
         <meshBasicMaterial />
       </mesh>
 
-      {/* {isMounted && sunRef.current ? ( */}
-      {/*   <EffectComposer> */}
-      {/*     <GodRays sun={sunRef.current} decay={0.86} /> */}
-      {/*     <Bloom luminanceThreshold={1} intensity={1} /> */}
-      {/*   </EffectComposer> */}
-      {/* ) : null} */}
+      {isMounted && sunRef.current ? (
+        <EffectComposer>
+          <GodRays sun={sunRef.current} decay={0.86} />
+          <Bloom luminanceThreshold={1} intensity={1} />
+        </EffectComposer>
+      ) : null}
     </Fragment>
   );
 }

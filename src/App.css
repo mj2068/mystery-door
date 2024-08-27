@@ -1,9 +1,13 @@
 #root {
   /* width: 100vw; */
+  margin: auto;
   height: 100vh;
-  min-height: 480px;
-
+  /* min-height: 480px; */
+  max-width: 62.5vh;
+  
   position: relative;
+
+  background-color: #222;
 }
 
 #app {
@@ -17,6 +21,58 @@
   top: 0;
   display: flex;
   flex-direction: column;
+}
+
+.icon-container {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  font-size: 48px;
+  bottom: 5%;
+  left: 50%;
+  translate: -50%;
+  transition:
+    opacity 0.5s ease-out,
+    scale 0.5s ease-out;
+  opacity: 0.3;
+  scale: 1;
+  color: white;
+
+  /* animation: 1s ease 3s infinite alternate pulsing-scale; */
+
+  &.hidden {
+    opacity: 0;
+    scale: 0;
+    animation: unset;
+  }
+
+  & img {
+    width: 64px;
+  }
+}
+
+img.invert {
+  filter: invert();
+}
+
+@keyframes pulsing-scale {
+  from {
+    scale: 1;
+  }
+  to {
+    scale: 1.1;
+  }
+}
+
+.welcome-container {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  & img {
+    width: 100%;
+  }
 }
 
 .debug {
